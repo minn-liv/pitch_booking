@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('hotline');
             $table->string('description');
             $table->string('image');
-            $table->string('longitude');
-            $table->string('latitude');
-            $table->integer('host_by');
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
+            $table->integer('host_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

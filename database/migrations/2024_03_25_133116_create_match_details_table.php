@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('match_details', function (Blueprint $table) {
-            $table->increments('match_id');
-            $table->integer('user_id');
+            $table->increments('match_id')->references('id')->on('match')->onDelete('cascade');
+            $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

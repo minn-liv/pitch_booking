@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('pitch_type');
             $table->integer('price');
-            $table->integer('pitch_id');
+            $table->integer('pitch_id')->references('id')->on('pitch')->onDelete('cascade');
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();

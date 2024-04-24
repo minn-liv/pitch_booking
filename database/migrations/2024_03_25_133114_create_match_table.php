@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('match', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('created_by');
-            $table->integer('pitch_id');
+            $table->integer('created_by')->references('id')->on('users');
+            $table->integer('pitch_id')->references('id')->on('pitch');
             $table->integer('pitch_information_id')->nullable();
             $table->text('note');
             $table->text('rules');
