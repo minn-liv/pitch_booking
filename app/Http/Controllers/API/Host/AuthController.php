@@ -24,7 +24,7 @@ class AuthController extends Controller
         try {
             if (Auth::attempt($credentials)) {
                 $user = $request->user();
-                $tokenResult = $user->createToken('tony');
+                $tokenResult = $user->createToken('client');
 
                 $output = [
                     'success' => true,
@@ -65,13 +65,6 @@ class AuthController extends Controller
             'unique'      => 'Đã tồn tại :attribute',
         );
 
-        $attribute_names = array(
-            'name'                  => 'Tên',
-            'email'                 => 'Email',
-            'phone'                 => 'Số điện thoại',
-            'password'              => 'Mật khấu',
-        );
-
         $user = new User();
         $user->username = $request->username;
         $user->password = Hash::make($request->password);
@@ -84,15 +77,11 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            // return back()->withErrors($validator)->withInput();
             $error = $validator->errors()->all();
             return $this->resError($error);
         }
 
         try {
-            // if ($request->hasFile('avatar')) {
-            //     $user->avatar = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' . strtolower($request->file('avatar')->getClientOriginalExtension());
-            // }
             $user->save();
             return $this->resSuccess("Đăng ký thành công");
         } catch (Exception $e) {
@@ -102,10 +91,21 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+        $user = $request->user();
+        if ($user) {
+            $user->token()->revoke();
+
+            $output = [
+                'success' => true,
+                'message' => 'Successfully logged out'
+            ];
+        } else {
+            $output = [
+                'success' => false,
+                'message' => 'Unauthorized'
+            ];
+        }
+        return response()->json($output);
     }
 
     public function user(Request $request)

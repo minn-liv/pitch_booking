@@ -14,7 +14,7 @@ class PitchController extends Controller
     //
     public function store(Request $request)
     {
-        $id_user =  Auth::id();
+        $user_id = Auth::id();
 
         $rules = [
             'name' => 'required|string',
@@ -28,7 +28,6 @@ class PitchController extends Controller
             'string'   => 'Vui lòng nhập đúng :attribute.',
         );
 
-
         $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             $error = $validator->errors()->first();
@@ -40,7 +39,7 @@ class PitchController extends Controller
         $pitch->address = $request->address;
         $pitch->hotline = $request->hotline;
         $pitch->description = $request->description;
-        $pitch->host_by = 4;
+        $pitch->host_by = $user_id;
         try {
             $pitch->save();
 
@@ -50,7 +49,7 @@ class PitchController extends Controller
         }
     }
 
-    public function list(Request $request)
+    public function list()
     {
         try {
             $pitch = Pitch::all();
@@ -81,11 +80,11 @@ class PitchController extends Controller
     public function detail(Request $request)
     {
         try {
-            $pitch = Pitch::find($request->id)->with('pitch_information')->get();
+            $pitch = Pitch::where('id', $request->id)->with('pitch_information')->get();
             if ($pitch) {
-                return $this->resSuccess('Lấy thông tin thành công!', $pitch);
+                return $this->resSuccess('Get detail success!', $pitch);
             } else {
-                return $this->resError('Không tìm thấy sân bóng yêu cầu!');
+                return $this->resError('Not found!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);

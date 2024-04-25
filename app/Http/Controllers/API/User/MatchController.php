@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Match;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class MatchController extends Controller
@@ -54,7 +53,7 @@ class MatchController extends Controller
         try {
             $match->save();
 
-            return $this->resSuccess('Tạo sân bóng thành công!', $match);
+            return $this->resSuccess('Create success!', $match);
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
         }
@@ -65,9 +64,9 @@ class MatchController extends Controller
         try {
             $match = Match::all();
             if ($match) {
-                return $this->resSuccess('Lấy danh sách thành công!', $match);
+                return $this->resSuccess('Get list success!', $match);
             } else {
-                return $this->resSuccess('Lấy danh sách thất bại!');
+                return $this->resSuccess('Not found!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);

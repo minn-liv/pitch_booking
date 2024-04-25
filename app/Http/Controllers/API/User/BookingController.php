@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
@@ -14,11 +15,9 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        $user_created = 4;
-        $pitch_information_id = 1;
+        $user_created = Auth::user()->id;
         $rules = [
-            // 'user_created' => 'required',
-            // 'pitch_information_id' => 'required',
+            'pitch_information_id' => 'required',
             'note' => 'required|string',
             'total' => 'required|integer',
             'date' => 'required|date',
@@ -40,7 +39,7 @@ class BookingController extends Controller
         try {
             $booking = new Booking();
             $booking->user_created = $user_created;
-            $booking->pitch_information_id = $pitch_information_id;
+            $booking->pitch_information_id = $request->pitch_information_id;
             $booking->note = $request->note;
             $booking->total = $request->total;
             $booking->payment_status = 0;
@@ -60,26 +59,23 @@ class BookingController extends Controller
     public function list()
     {
         try {
-
             $booking = Booking::all();
             if ($booking) {
-                return $this->resSuccess('List booking!', $booking, 200);
+                return $this->resSuccess('Get list success!', $booking, 200);
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }
     }
 
-    public function listByUser(Request $request)
+    public function listByUser()
     {
+        $id = Auth::user()->id;
         try {
-            if ($request->id) {
-                $booking = Booking::where('user_created', $request->id)->get();
-            } else {
-                $booking = Booking::all();
-            }
-            if ($booking) {
-                return $this->resSuccess('List booking!', $booking, 200);
+            if ($id) {
+                $booking = Booking::where('user_created', $id)->get();
+
+                return $this->resSuccess('Get list success!', $booking, 200);
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage());

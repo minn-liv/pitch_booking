@@ -15,9 +15,9 @@ class PitchController extends Controller
         try {
             $pitch = Pitch::all();
             if ($pitch) {
-                return $this->resSuccess('Lấy danh sách thành công!', $pitch);
+                return $this->resSuccess('Get list success!', $pitch);
             } else {
-                return $this->resSuccess('Lấy danh sách thất bại!');
+                return $this->resSuccess('Not found!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
@@ -29,9 +29,9 @@ class PitchController extends Controller
         try {
             $pitch = Pitch::find($request->id)->with('pitch_information')->get();
             if ($pitch) {
-                return $this->resSuccess('Lấy thông tin thành công!', $pitch);
+                return $this->resSuccess('Get information success!', $pitch);
             } else {
-                return $this->resError('Không tìm thấy sân bóng yêu cầu!');
+                return $this->resError('Not found!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
@@ -44,7 +44,7 @@ class PitchController extends Controller
         $location = $request->location;
         $name = $request->name;
         if (!isset($location) && !isset($name)) {
-            return $this->resError('Vui lòng nhập khu vực hoặc tên cần tìm', [], 422);
+            return $this->resError('Location or Name is required', [], 422);
         }
 
         try {
@@ -52,9 +52,9 @@ class PitchController extends Controller
                 ->orWhere('name', 'like', '%' . $name . '%')
                 ->get();
             if ($pitch) {
-                return $this->resSuccess('Lấy danh sách thành công!', $pitch);
+                return $this->resSuccess('Get list success!', $pitch);
             } else {
-                return $this->resSuccess('Lấy danh sách thất bại!');
+                return $this->resSuccess('Not found!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);

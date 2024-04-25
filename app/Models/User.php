@@ -6,11 +6,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
-use Illuminate\Auth\Middleware\Authenticate;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * Class User
@@ -36,7 +36,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
 	protected $table = 'users';
-	use HasApiTokens;
+	use HasApiTokens, HasFactory, Notifiable;
 	protected $casts = [
 		'dob' => 'datetime',
 		'latitude' => 'float',
@@ -63,4 +63,9 @@ class User extends Authenticatable
 		'status',
 		'remember_token'
 	];
+
+	public function booking()
+	{
+		return $this->belongsTo(Booking::class, 'id', 'user_created');
+	}
 }

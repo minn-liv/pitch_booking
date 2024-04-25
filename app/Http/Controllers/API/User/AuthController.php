@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +23,24 @@ class AuthController extends Controller
 
         try {
             if (Auth::attempt($credentials)) {
-                return $this->resSuccess('Đăng nhập thành công', auth()->user(), 200);
+                $user = $request->user();
+                $tokenResult = $user->createToken('client');
+
+                $output = [
+                    'success' => true,
+                    'message' => 'Login Success',
+                    'token_type' => 'Bearer',
+                    'access_token' => $tokenResult->accessToken,
+                    'expires_in' => Carbon::parse($tokenResult->token->expires_at)->timestamp
+                ];
             } else {
-                return $this->resError('Sai tên tài khoản hoặc mật khẩu', [], 422);
+                $output = [
+                    'success' => false,
+                    'message' => 'Some thing went wrong'
+                ];
             }
+
+            return response()->json($output);
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
         }
@@ -69,15 +84,11 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
-            // return back()->withErrors($validator)->withInput();
             $error = $validator->errors()->all();
             return $this->resError($error);
         }
 
         try {
-            // if ($request->hasFile('avatar')) {
-            //     $user->avatar = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' . strtolower($request->file('avatar')->getClientOriginalExtension());
-            // }
             $user->save();
             return $this->resSuccess("Đăng ký thành công");
         } catch (Exception $e) {
@@ -85,12 +96,24 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $request->user()->token()->revoke();
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+        /** @var \App\Models\User $user **/
+        $user = Auth::user();
+        if ($user) {
+            $user->token()->revoke();
+
+            $output = [
+                'success' => true,
+                'message' => 'Successfully logged out'
+            ];
+        } else {
+            $output = [
+                'success' => false,
+                'message' => 'Unauthorized'
+            ];
+        }
+        return response()->json($output);
     }
 
     public function user(Request $request)

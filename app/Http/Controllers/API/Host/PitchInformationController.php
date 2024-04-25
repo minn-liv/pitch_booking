@@ -14,9 +14,9 @@ class PitchInformationController extends Controller
     //
     public function store(Request $request)
     {
-        $pitch_id = 2;
         $rules = [
             'name' => 'required|string',
+            'pitch_id' => 'required',
             'pitch_type' => 'required|string',
             'price' => 'required|integer',
             'start_time' => 'required|string',
@@ -39,11 +39,11 @@ class PitchInformationController extends Controller
         $pitch->name = $request->name;
         $pitch->pitch_type = $request->pitch_type;
         $pitch->price = $request->price;
-        $pitch->pitch_id = $pitch_id;
+        $pitch->pitch_id = $request->pitch_id;
         $pitch->start_time = $request->start_time;
         $pitch->end_time = $request->end_time;
         try {
-            $pitch_info = Pitch::where('id', $pitch_id)->with('pitch_information')->first();
+            $pitch_info = Pitch::where('id', $request->pitch_id)->with('pitch_information')->first();
             if ($pitch_info->pitch_information) {
                 return $this->resError('Đã có thông tin sân chi tiết!', $pitch_info);
             } else {

@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('user_type');
             $table->decimal('latitude')->nullable();
             $table->decimal('longitude')->nullable();
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
             $table->integer('status')->default(1);
             $table->rememberToken();
             $table->timestamps();
