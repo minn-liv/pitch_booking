@@ -18,14 +18,14 @@ class BookingController extends Controller
             $booking = Booking::where('id', $request->id)->first();
 
             if (!isset($booking)) {
-                return $this->resError('Không tìm thấy lịch đặt!');
+                return $this->resError('Not found booking!');
             }
             if ($booking->booking_status === 1) {
-                return $this->resError('Lịch đặt đã đã accept!');
+                return $this->resError('Booking has accept!');
             } else {
                 $booking->booking_status = 1;
                 $booking->save();
-                return $this->resSuccess('Đã chấp nhận đặt lịch thành công!');
+                return $this->resSuccess('Accept booking success!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);

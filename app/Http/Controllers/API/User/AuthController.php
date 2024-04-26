@@ -56,20 +56,12 @@ class AuthController extends Controller
             'address' => 'required|string',
         ];
 
-
         $messages = array(
             'required' => 'Vui lòng nhập :attribute.',
             'string'   => 'Vui lòng nhập đúng :attribute.',
             'max'      => 'Vui lòng chọn :attribute tối đa 5Mb',
             'min'      => 'Vui lòng nhập :attribute tối thiểu :min kí tự',
             'unique'      => 'Đã tồn tại :attribute',
-        );
-
-        $attribute_names = array(
-            'name'                  => 'Tên',
-            'email'                 => 'Email',
-            'phone'                 => 'Số điện thoại',
-            'password'              => 'Mật khấu',
         );
 
         $user = new User();
@@ -90,7 +82,7 @@ class AuthController extends Controller
 
         try {
             $user->save();
-            return $this->resSuccess("Đăng ký thành công");
+            return $this->resSuccess("Register success!");
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }

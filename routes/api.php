@@ -57,6 +57,7 @@ Route::group(['namespace' => 'API'], function () {
             Route::post('booking', 'BookingController@store');
             Route::get('list-booking', 'BookingController@listByUser');
             Route::post('create-match', 'MatchController@store');
+            Route::post('join-match', 'MatchController@join');
         });
 
         Route::get('detail-pitch', 'PitchController@detail');

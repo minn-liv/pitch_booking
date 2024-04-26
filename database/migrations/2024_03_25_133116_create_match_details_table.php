@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('match_details', function (Blueprint $table) {
-            $table->increments('match_id')->references('id')->on('match')->onDelete('cascade');
+            $table->integer('match_id')->references('id')->on('match')->onDelete('cascade');
             $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->primary(['match_id', 'user_id']);
             $table->timestamps();
         });
     }

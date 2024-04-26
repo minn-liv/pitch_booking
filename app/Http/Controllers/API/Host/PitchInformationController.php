@@ -45,10 +45,10 @@ class PitchInformationController extends Controller
         try {
             $pitch_info = Pitch::where('id', $request->pitch_id)->with('pitch_information')->first();
             if ($pitch_info->pitch_information) {
-                return $this->resError('Đã có thông tin sân chi tiết!', $pitch_info);
+                return $this->resError('Pitch already has information!', $pitch_info);
             } else {
                 $pitch->save();
-                return $this->resSuccess('Tạo thông tin chi tiết sân thành công!', $pitch);
+                return $this->resSuccess('Create information success!', $pitch);
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
@@ -62,7 +62,7 @@ class PitchInformationController extends Controller
             $pitch = PitchInformation::find($request->id);
             $pitch->update($credentials);
 
-            return $this->resSuccess('Chỉnh sửa thông tin thành công!', $pitch);
+            return $this->resSuccess('Edit success!', $pitch);
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }
@@ -74,9 +74,9 @@ class PitchInformationController extends Controller
             $pitch = PitchInformation::find($request->id);
 
             if ($pitch) {
-                return $this->resSuccess('Lấy thông tin thành công!', $pitch);
+                return $this->resSuccess('Get detail success!', $pitch);
             } else {
-                return $this->resError('Không tìm thấy sân bóng yêu cầu!');
+                return $this->resError('Not found');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);

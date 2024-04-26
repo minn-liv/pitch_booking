@@ -43,7 +43,7 @@ class PitchController extends Controller
         try {
             $pitch->save();
 
-            return $this->resSuccess('Tạo sân bóng thành công!', $pitch);
+            return $this->resSuccess('Create success!', $pitch);
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
         }
@@ -54,9 +54,7 @@ class PitchController extends Controller
         try {
             $pitch = Pitch::all();
             if ($pitch) {
-                return $this->resSuccess('Lấy danh sách thành công!', $pitch);
-            } else {
-                return $this->resSuccess('Lấy danh sách thất bại!');
+                return $this->resSuccess('Get list success!', $pitch);
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
@@ -71,7 +69,7 @@ class PitchController extends Controller
             $pitch = Pitch::find($request->id);
             $pitch->update($credentials);
 
-            return $this->resSuccess('Chỉnh sửa thông tin thành công!', $pitch);
+            return $this->resSuccess('Edit success!', $pitch);
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }

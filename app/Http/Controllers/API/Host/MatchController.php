@@ -14,7 +14,7 @@ class MatchController extends Controller
     //
     public function store(Request $request)
     {
-        // $user_id =  Auth::id();
+        $user_id =  Auth::id();
         $rules = [
             'note' => 'required|string',
             'rules' => 'required|string',
@@ -40,7 +40,7 @@ class MatchController extends Controller
 
         $match = new Match();
 
-        $match->created_by = 4;
+        $match->created_by = $user_id;
         $match->pitch_id = $request->pitch_id;
         $match->note = $request->note;
         $match->rules = $request->rules;
@@ -54,7 +54,7 @@ class MatchController extends Controller
         try {
             $match->save();
 
-            return $this->resSuccess('Tạo sân bóng thành công!', $match);
+            return $this->resSuccess('Create match success!', $match);
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
         }

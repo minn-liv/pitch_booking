@@ -83,7 +83,7 @@ class AuthController extends Controller
 
         try {
             $user->save();
-            return $this->resSuccess("Đăng ký thành công");
+            return $this->resSuccess("Register success");
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }
