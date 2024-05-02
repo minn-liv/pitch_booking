@@ -15,9 +15,7 @@ class PitchController extends Controller
         try {
             $pitch = Pitch::all();
             if ($pitch) {
-                return $this->resSuccess('Get list success!', $pitch);
-            } else {
-                return $this->resSuccess('Not found!');
+                return $this->resSuccess('Lấy danh sách sân thành công!', $pitch);
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
@@ -26,36 +24,40 @@ class PitchController extends Controller
 
     public function detail(Request $request)
     {
+        if (!isset($request->id)) {
+            return $this->resError('Vui lòng nhập id sân!');
+        }
+
         try {
-            $pitch = Pitch::find($request->id)->with('pitch_information')->get();
-            if ($pitch) {
-                return $this->resSuccess('Get information success!', $pitch);
-            } else {
-                return $this->resError('Not found!');
+            $pitch = Pitch::where('id', $request->id)->with('pitch_information')->first();
+
+            if (!isset($pitch)) {
+                return $this->resError('Không tìm thấy sân!');
             }
+            return $this->resSuccess('Lấy thông tin thành công!', $pitch);
         } catch (Exception $e) {
-            return $this->resError($e->getMessage(), [], 422);
+            return $this->resError($e->getMessage());
         }
     }
 
 
     public function filter(Request $request)
     {
-        $location = $request->location;
+        $address = $request->address;
         $name = $request->name;
-        if (!isset($location) && !isset($name)) {
-            return $this->resError('Location or Name is required', [], 422);
+        $pitch_type = $request->pitch_type;
+        if (!isset($address) && !isset($name) && !isset($pitch_type)) {
+            return $this->resError('Vui lòng nhập địa chỉ hoặc tên sân', [], 422);
         }
 
         try {
-            $pitch = Pitch::where('address', 'like', '%' . $location . '%')
-                ->orWhere('name', 'like', '%' . $name . '%')
+            $pitch = Pitch::where('address', 'LIKE', '%' . $address . '%')
+                ->where('name', 'LIKE', '%' . $name . '%')
                 ->get();
-            if ($pitch) {
-                return $this->resSuccess('Get list success!', $pitch);
-            } else {
-                return $this->resSuccess('Not found!');
+            if (!isset($pitch[0])) {
+                return $this->resError('Không tìm thấy sân yêu cầu!');
             }
+            return $this->resSuccess('Lấy danh sách thành công!', $pitch);
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
         }

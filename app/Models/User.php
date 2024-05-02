@@ -64,6 +64,11 @@ class User extends Authenticatable
 		'remember_token'
 	];
 
+	public function AauthAcessToken()
+	{
+		return $this->hasMany(OauthAccessToken::class);
+	}
+
 	public function booking()
 	{
 		return $this->belongsTo(Booking::class, 'id', 'user_created');

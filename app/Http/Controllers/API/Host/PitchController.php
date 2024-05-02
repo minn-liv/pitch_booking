@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Host;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pitch;
+use App\Models\PitchInformation;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,15 +18,18 @@ class PitchController extends Controller
         $user_id = Auth::id();
 
         $rules = [
-            'name' => 'required|string',
-            'address' => 'required|string',
-            'hotline' => 'required|string',
-            'description' => 'required|string',
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'hotline' => ['required', 'regex:/^[0-9]+$/', 'max:10'],
+            'description' => 'required|string|max:255',
         ];
 
         $messages = array(
             'required' => 'Vui lòng nhập :attribute.',
-            'string'   => 'Vui lòng nhập đúng :attribute.',
+            'string' => 'Vui lòng nhập đúng :attribute.',
+            'max' => 'Vui lòng nhập :attribute tối đa chỉ :max kí tự',
+            'regex' => 'Vui lòng nhập đúng :attribute'
+
         );
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -43,7 +47,7 @@ class PitchController extends Controller
         try {
             $pitch->save();
 
-            return $this->resSuccess('Create success!', $pitch);
+            return $this->resSuccess('Tạo sân thành công!', $pitch);
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
         }
@@ -54,7 +58,7 @@ class PitchController extends Controller
         try {
             $pitch = Pitch::all();
             if ($pitch) {
-                return $this->resSuccess('Get list success!', $pitch);
+                return $this->resSuccess('Lấy danh sách sân thành công!', $pitch);
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);
@@ -63,13 +67,36 @@ class PitchController extends Controller
 
     public function edit(Request $request)
     {
+        $credentials = $request->all();
+        $rules = [
+            'id' => 'required|integer',
+            'name' => 'string|max:255',
+            'address' => 'string|max:255',
+            'hotline' => ['regex:/^[0-9]+$/', 'max:10'],
+            'description' => 'string|max:255',
+        ];
 
-        $credentials = array_filter($request->all());
+        $messages = array(
+            'required' => 'Vui lòng nhập :attribute.',
+            'string' => 'Vui lòng nhập đúng :attribute.',
+            'max' => 'Vui lòng nhập :attribute tối đa chỉ :max kí tự',
+            'regex' => 'Vui lòng nhập đúng :attribute'
+
+        );
         try {
-            $pitch = Pitch::find($request->id);
-            $pitch->update($credentials);
+            $validator = Validator::make($credentials, $rules, $messages);
 
-            return $this->resSuccess('Edit success!', $pitch);
+            if ($validator->fails()) {
+                $error = $validator->errors()->first();
+                return $this->resError($error);
+            }
+            $pitch = Pitch::find($request->id);
+            if (!isset($pitch)) {
+                return $this->resError('Không tìm thấy sân!');
+            }
+
+            $pitch->update($credentials);
+            return $this->resSuccess('Chỉnh sửa thông tin thành công!', $pitch);
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }
@@ -77,27 +104,39 @@ class PitchController extends Controller
 
     public function detail(Request $request)
     {
+        if (!isset($request->id)) {
+            return $this->resError('Vui lòng nhập id sân!');
+        }
         try {
-            $pitch = Pitch::where('id', $request->id)->with('pitch_information')->get();
-            if ($pitch) {
-                return $this->resSuccess('Get detail success!', $pitch);
-            } else {
-                return $this->resError('Not found!');
+            $pitch = Pitch::where('id', $request->id)->with('pitch_information')->first();
+
+            if (!isset($pitch)) {
+                return $this->resError('Không tìm thấy sân!');
             }
+            return $this->resSuccess('Lấy thông tin thành công!', $pitch);
         } catch (Exception $e) {
-            return $this->resError($e->getMessage(), [], 422);
+            return $this->resError($e->getMessage());
         }
     }
 
     public function delete(Request $request)
     {
+        if (!isset($request->id)) {
+            return $this->resError('Vui lòng nhập id sân!');
+        }
         try {
             $pitch = Pitch::find($request->id);
             if ($pitch) {
+                // Check if pitch_information exist and delete 
+                $pitch_information = PitchInformation::where('pitch_id', $request->id)->first();
+                if (isset($pitch_information)) {
+                    $pitch_information->delete();
+                }
+
                 $pitch->delete();
-                return $this->resSuccess('Delete success!');
+                return $this->resSuccess('Xóa thành công!');
             } else {
-                return $this->resError('Not found!');
+                return $this->resError('Không tìm thấy sân!');
             }
         } catch (Exception $e) {
             return $this->resError($e->getMessage(), [], 422);

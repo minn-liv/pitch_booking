@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\PitchInformation;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,26 +18,38 @@ class BookingController extends Controller
     {
         $user_created = Auth::user()->id;
         $rules = [
-            'pitch_information_id' => 'required',
-            'note' => 'required|string',
+            'pitch_information_id' => 'required|integer',
+            'note' => 'required|string|max:255',
             'total' => 'required|integer',
             'date' => 'required|date',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
         ];
 
         $messages = array(
             'required' => 'Vui lòng nhập :attribute.',
             'string'   => 'Vui lòng nhập đúng :attribute.',
             'integer'   => 'Vui lòng nhập đúng :attribute.',
+            'max' => 'Vui lòng nhập :attribute tối đa chỉ :max kí tự',
+            'date_format' => 'Vui lòng nhập đúng :attribute',
+            'after' => 'Thời gian bắt đầu phải trước thời gian kết thúc',
+            'date' => 'Vui lòng nhập đúng :attribute',
         );
 
-        $validator = Validator::make($request->all(), $rules, $messages);
-        if ($validator->fails()) {
-            $error = $validator->errors()->first();
-            return $this->resError($error);
-        }
+
         try {
+            $validator = Validator::make($request->all(), $rules, $messages);
+            if ($validator->fails()) {
+                $error = $validator->errors()->first();
+                return $this->resError($error);
+            }
+
+            // Check if pitch_information not exist
+            $pitch_info = PitchInformation::find($request->pitch_information_id);
+            if (!isset($pitch_info)) {
+                return $this->resError('Sân không tồn tại');
+            }
+
             $booking = new Booking();
             $booking->user_created = $user_created;
             $booking->pitch_information_id = $request->pitch_information_id;
@@ -49,20 +62,7 @@ class BookingController extends Controller
             $booking->end_time = $request->end_time;
 
             $booking->save();
-
-            return $this->resSuccess('Booking success!', $booking, 200);
-        } catch (Exception $e) {
-            return $this->resError($e->getMessage());
-        }
-    }
-
-    public function list()
-    {
-        try {
-            $booking = Booking::all();
-            if ($booking) {
-                return $this->resSuccess('Get list success!', $booking, 200);
-            }
+            return $this->resSuccess('Đặt lịch thành công!', $booking, 200);
         } catch (Exception $e) {
             return $this->resError($e->getMessage());
         }
@@ -70,7 +70,7 @@ class BookingController extends Controller
 
     public function listByUser()
     {
-        $id = Auth::user()->id;
+        $id = Auth::id();
         try {
             if ($id) {
                 $booking = Booking::where('user_created', $id)->get();
