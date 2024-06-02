@@ -1,0 +1,103 @@
+.main {
+    display: flex;
+    flex: 1 0 auto;
+    max-width: 100%;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    .search-box {
+        .search-box__image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            contain: strict;
+
+            &::before {
+                display: block;
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                background: #000;
+                opacity: 0.25;
+                z-index: 2;
+            }
+            img {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                min-width: 100%;
+                min-height: 100%;
+                display: none;
+                transform: translate(-50%);
+                will-change: transform;
+                transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+                z-index: 1;
+            }
+        }
+
+        .search-box__content {
+            position: relative;
+
+            .home-intro {
+                h2 {
+                    font-size: 44px;
+                    font-weight: 700;
+                    color: #fff;
+                    font-family: "Montserrat", sans-serif;
+                }
+                h3 {
+                    color: #fff;
+                    padding-top: 12px;
+                    font-size: 13px;
+                    font-weight: 700;
+                }
+
+                .section-separator {
+                    float: left;
+                    width: 100%;
+                    position: relative;
+                    margin: 10px 0 15px;
+
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        left: 50%;
+                        top: 0;
+                        height: 4px;
+                        margin-left: -25px;
+                        width: 50px;
+                        border-radius: 3px;
+                        background: #3aaced;
+                    }
+                }
+            }
+
+            .main-search-input-wrap {
+                border-radius: 4px;
+                margin-top: 50px;
+                box-shadow: 0 0 0 10px hsla(0, 0%, 100%, 0.3);
+                float: left;
+                position: relative;
+                overflow: hidden;
+
+                .main-search-input-item {
+                    box-shadow:
+                        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+                        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+                }
+
+                .main-search-input-button {
+                    background-color: #f9b90f;
+                    border-color: #f9b90f;
+
+                    span {
+                    }
+                }
+            }
+        }
+    }
+}

@@ -14,5 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('customer.layouts.app');
+})->name('homePage');
+
+
+Route::post('/nguoi-dung/dang-nhap', 'User\AuthController@login')->name('user.postLogin');
+Route::get("/dang-xuat", 'User\AuthController@logout')->name('user.logout');

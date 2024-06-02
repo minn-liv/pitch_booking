@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API\User;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -29,30 +30,14 @@ class AuthController extends Controller
             'min'      => 'Vui lòng nhập :attribute tối thiểu :min kí tự',
         );
 
-        $validator = Validator::make($credentials, $rules, $messages);
 
-        if ($validator->fails()) {
-            $error = $validator->errors()->first();
-            return $this->resError($error);
-        }
+
         if (Auth::attempt(array('username' => $credentials['username'], 'password' => $credentials['password']))) {
-            $user = $request->user();
-            $tokenResult = $user->createToken('client');
-
-            $output = [
-                'success'       => true,
-                'message'       => 'Login Success',
-                'token_type'    => 'Bearer',
-                'access_token'  => $tokenResult->accessToken,
-                'expires_in'    => Carbon::parse($tokenResult->token->expires_at)->timestamp
-            ];
+            $request->session()->regenerate();
+            redirect()->route('/trang-chu');
         } else {
-            $output = [
-                'success' => false,
-                'message' => 'Sai tên tài khoản hoặc mật khẩu'
-            ];
+            return redirect()->back()->with(['error' => 'Sai tên đăng nhập hoặc mật khẩu']);
         }
-        return response()->json($output);
     }
     public function register(Request $request)
     {
@@ -100,31 +85,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        if (Auth::check()) {
-            Auth::user()->token()->revoke();
-            return $this->resSuccess("Đăng xuất thành công");
-        } else {
-            return $this->resError('Not authenticated');
-        }
-    }
-    public function avatar(Request $request)
-    {
-        $request->validate([
-            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
-        ]);
-
-        $imageName = time() . '.' . $request->image->extension();
-
-        try {
-            if ($request->image) {
-                $request->image->move(public_path('images/users/'), $imageName);
-                $user = User::find(Auth::id());
-                $user->avatar = $imageName;
-                $user->update();
-                return $this->resSuccess('Upload ảnh thành công');
-            }
-        } catch (Exception $e) {
-            return $this->resError('Upload ảnh thất bại ' . $e->getMessage());
-        }
+        \auth()->logout();
+        return redirect('/');
     }
 }

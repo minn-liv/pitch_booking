@@ -1,0 +1,75 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #18458b !important;
+    .menu-wrapper {
+        padding: 0.5rem;
+
+        .menu-item__title {
+            padding: 1.1rem 0.875rem;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: none;
+            line-height: 25px;
+            letter-spacing: 0;
+            &:hover {
+                color: #f9b90f;
+            }
+        }
+        .active {
+            color: #f9b90f;
+        }
+    }
+
+    .authentication-button {
+        .menu-item__title {
+            padding-top: 1.1rem;
+            padding-bottom: 1.1rem;
+
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: none;
+            line-height: 25px;
+            letter-spacing: 0;
+            &:hover {
+                color: #f9b90f;
+            }
+        }
+        .menu-item__title:first-child {
+            border-left: 1px solid rgba(0, 0, 0, 0.21);
+        }
+        .menu-item__title:last-child {
+            border-right: 1px solid rgba(0, 0, 0, 0.21);
+        }
+    }
+
+    .show-search-button {
+        .menu-item__search {
+            padding-top: 1.1rem;
+            padding-bottom: 1.1rem;
+            border-right: 1px solid rgba(0, 0, 0, 0.21);
+        }
+    }
+
+    .modal-register {
+        .btn-register {
+            background: #2b5493;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+
+    .modal-login {
+        .btn-login {
+            background: #2b5493;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+}

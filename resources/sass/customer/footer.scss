@@ -1,0 +1,79 @@
+.subscribe-footer {
+    background-size: cover;
+    padding-top: 25px;
+    padding-bottom: 20px;
+    position: relative;
+
+    .footer-img-soccer {
+        position: absolute;
+        z-index: 9;
+        top: -50px;
+        height: 300px;
+    }
+
+    .footer-input-item {
+        box-shadow:
+            0 3px 1px -2px rgba(0, 0, 0, 0.2),
+            0 2px 2px 0 rgba(0, 0, 0, 0.14),
+            0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .footer-input-button {
+        background: #19458a;
+        text-transform: uppercase;
+        transition-duration: 0.28s;
+        transition-property: box-shadow, transform, opacity;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        border-radius: 4px;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+}
+
+.sub-footer {
+    background: #18458b;
+    z-index: 3;
+    overflow: hidden;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    .footer-introduce {
+        border-bottom: 1px solid hsla(0, 0%, 100%, 0.11);
+    }
+
+    .footer-contact-policy {
+        color: hsla(0, 0%, 100%, 0.81);
+        text-decoration: none;
+    }
+
+    .customer-support-widget {
+        margin-top: 10px;
+        padding: 25px 30px 15px 45px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        border: 1px solid hsla(0, 0%, 100%, 0.1);
+
+        .cs-number {
+            color: #3aaced;
+            text-decoration: none;
+        }
+        .cs-number-button {
+            float: right;
+            padding: 15px 20px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            top: -14px;
+            position: relative;
+            background: #f9b90f;
+        }
+    }
+}
+
+.main-footer {
+    background: #061b41;
+}

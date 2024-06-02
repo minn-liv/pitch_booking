@@ -31,6 +31,7 @@ Route::group(['namespace' => 'API'], function () {
             Route::post('/edit-pitch', 'PitchController@edit');
             Route::delete('/delete-pitch', 'PitchController@delete');
 
+
             Route::post('/create-pitch-information', 'PitchInformationController@store');
             Route::post('/edit-pitch-information', 'PitchInformationController@edit');
             Route::get('/detail-pitch-information', 'PitchInformationController@detail');
@@ -56,6 +57,8 @@ Route::group(['namespace' => 'API'], function () {
             Route::post('create-match', 'MatchController@store');
             Route::post('/join-match', 'MatchController@join');
             Route::post('/leave-match', 'MatchController@leave');
+
+            Route::post('/upload', 'AuthController@avatar');
         });
 
         Route::get('/list-pitch', 'PitchController@list');
